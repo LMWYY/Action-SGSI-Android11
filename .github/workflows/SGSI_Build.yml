@@ -140,5 +140,5 @@ jobs:
         with: 
          name: "SGSI"
          path: |
-           ${{ github.workspace }}/Tool-SGSI-build/upload_ab/*
+           ${{ github.workspace }}/Tool-SGSI-build/upload_aonly/*
            ${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt
