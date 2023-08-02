@@ -63,11 +63,19 @@ jobs:
           sudo cp -r apps_clean $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
           sudo chmod 777 -R $GITHUB_WORKSPACE/Tool-SGSI-build
 
-      - name: Download ROM‌‌...
+      - name: Download ROM
         run: |
           cd $GITHUB_WORKSPACE/Tool-SGSI-build
           mkdir ./tmp
-          wget -U "Mozilla/5.0" ${{ github.event.inputs.ROM_URL }} -O "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}"
+          if [ ! -x "$(command -v curl)" ]; then
+          echo "curl command not found"
+          exit 1
+          fi
+          if [ -z "${{ github.event.inputs.ROM_URL }}" ]; then
+          echo "ROM_URL input is not set"
+          exit 1
+          fi
+          curl -L -o "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}" ${{ github.event.inputs.ROM_URL }}
           echo "zip_file: $(ls "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/")"
 
       - name: Configuration tool environment...
