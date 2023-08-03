@@ -51,7 +51,7 @@ jobs:
 
       - name: Configuration Environment‌‌...
         run: |
-          sudo apt-get install -y git wget git zip unzip curl axel aria2
+          sudo apt-get install -y git wget git zip unzip curl axel lftp
 
       - name: Get the SGSI tool‌‌...
         run: |
@@ -63,11 +63,11 @@ jobs:
           sudo cp -r apps_clean $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
           sudo chmod 777 -R $GITHUB_WORKSPACE/Tool-SGSI-build
 
-      - name: Download ROM
+      - name: Download ROM using lftp
         run: |
          cd $GITHUB_WORKSPACE/Tool-SGSI-build
          mkdir ./tmp
-         aria2c -U "Mozilla/5.0" -o "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}"
+         lftp -c "open '${{ github.event.inputs.ROM_URL }}'; get -o '$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}'"
          echo "zip_file: $(ls "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/")"
 
       - name: Configuration tool environment...
