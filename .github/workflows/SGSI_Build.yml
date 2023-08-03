@@ -62,12 +62,16 @@ jobs:
           sudo cp -r apps_clean $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
           sudo chmod 777 -R $GITHUB_WORKSPACE/Tool-SGSI-build
 
-      - name: Download ROM OF Aria2
+      - name: Download ROM using aria2
         run: |
          cd $GITHUB_WORKSPACE/Tool-SGSI-build
          mkdir ./tmp
-         aria2 --user-agent="Mozilla/5.0" --dir="$GITHUB_WORKSPACE/Tool-SGSI-build/tmp" --out="${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}"
-         echo "zip_file: $(ls "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/")"
+         aria2c --user-agent="Mozilla/5.0" --dir="$GITHUB_WORKSPACE/Tool-SGSI-build/tmp" --out="${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}" || echo "Download failed"
+         if [[ -f "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}" ]]; then
+         echo "Zip file downloaded successfully"
+         else
+         echo "Failed to download zip file"
+         fi
 
       - name: Configuration tool environment...
         run: |
@@ -149,12 +153,16 @@ jobs:
           sudo cp -r apps_clean $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
           sudo chmod 777 -R $GITHUB_WORKSPACE/Tool-SGSI-build
 
-      - name: Download ROM OF Aria2
+      - name: Download ROM using aria2
         run: |
          cd $GITHUB_WORKSPACE/Tool-SGSI-build
          mkdir ./tmp
-         aria2 --user-agent="Mozilla/5.0" --dir="$GITHUB_WORKSPACE/Tool-SGSI-build/tmp" --out="${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}"
-         echo "zip_file: $(ls "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/")"
+         aria2c --user-agent="Mozilla/5.0" --dir="$GITHUB_WORKSPACE/Tool-SGSI-build/tmp" --out="${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}" || echo "Download failed"
+         if [[ -f "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}" ]]; then
+         echo "Zip file downloaded successfully"
+         else
+         echo "Failed to download zip file"
+         fi
 
       - name: Configuration tool environment...
         run: |
