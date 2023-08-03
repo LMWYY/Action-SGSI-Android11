@@ -112,7 +112,7 @@ jobs:
       - name: Upload to Artifact OF AB
         uses: actions/upload-artifact@v3 
         with: 
-         name: "SGSI"
+         name: "SGSI_AB"
          path: |
            ${{ github.workspace }}/Tool-SGSI-build/upload_ab/*
            ${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt
@@ -203,7 +203,7 @@ jobs:
       - name: Upload to Artifact OF Aonly
         uses: actions/upload-artifact@v3 
         with: 
-         name: "SGSI"
+         name: "SGSI_Aonly"
          path: |
            ${{ github.workspace }}/Tool-SGSI-build/upload_aonly/*
            ${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt
