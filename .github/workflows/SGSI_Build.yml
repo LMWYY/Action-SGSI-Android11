@@ -27,108 +27,10 @@ on:
 
 
 jobs:
- job1:
+ BUILD-AB:
     runs-on: ubuntu-20.04
+
     steps:
-       - name: Step 1
-         run: echo "This is job 1"
-       - name: Step 2
-         if: ${{ github.event.inputs.SGSI_TYPE == 'AB' || github.event.inputs.SGSI_TYPE == 'BOTH' }}
-         run: echo "Executing job 1"
-    
-       - name: Get the source code of this repositorie...
-         uses: actions/checkout@main
-
-       - name: Get variable configuration...
-         run: |
-           echo "BUILD_TIME=$(date +%s | md5sum | awk '{print substr($1,1,10)}')" >> $GITHUB_ENV
-
-       - name: Clean up the environment‌‌...
-         run: |
-          docker rmi `docker images -q`
-          sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
-          sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
-          sudo -E apt-get update
-          sudo -E apt-get -y autoremove --purge
-          sudo -E apt-get clean
-          df -h
-
-       - name: Configuration Environment‌‌...
-         run: |
-          sudo apt-get install -y git wget git zip unzip curl axel aria2c
-
-       - name: Get the SGSI tool‌‌...
-         run: |
-          git clone --recurse-submodules https://github.com/xiaoxindada/SGSI-build-tool.git -b 11 $GITHUB_WORKSPACE/Tool-SGSI-build
-
-       - name: Replace custom condensed content...
-         run: |
-          sudo rm -rf $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
-          sudo cp -r apps_clean $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
-          sudo chmod 777 -R $GITHUB_WORKSPACE/Tool-SGSI-build
-
-       - name: Download ROM
-         run: |
-          cd $GITHUB_WORKSPACE/Tool-SGSI-build
-          mkdir ./tmp
-          aria2c --user-agent="Mozilla/5.0" --dir="$GITHUB_WORKSPACE/Tool-SGSI-build/tmp" --out="${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}"
-          echo "zip_file: $(ls "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/")"
-
-       - name: Configuration tool environment...
-         run: |
-          sudo sed -i 's/USE_MIRROR_FOR_PIP\=true/USE_MIRROR_FOR_PIP\=false/' $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
-          sudo bash $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
-          sudo apt-get -y --purge remove "adoptopenjdk-11-hotspot"
-          java -version
-
-       - name: Make AB type GSI‌‌...
-         if: ${{ github.event.inputs.SGSI_TYPE }} == 'AB' || ${{ github.event.inputs.SGSI_TYPE }} == 'BOTH'
-         run: |
-          sudo bash $GITHUB_WORKSPACE/Tool-SGSI-build/make.sh AB << EOF
-          ${{ github.event.inputs.ZIP_NAME }}
-          y
-          y
-          ${{ github.event.inputs.OS_TYPE }}
-          y
-
-       - name: Packing(AB)...
-         if: ${{ github.event.inputs.SGSI_TYPE }} == 'AB' || ${{ github.event.inputs.SGSI_TYPE }} == 'BOTH'
-         run: |
-          cd $GITHUB_WORKSPACE/Tool-SGSI-build
-          pwd
-          zip -r AB_${{ github.event.inputs.REPACK_NAME }} SGSI/*
-          ls "AB_${{ github.event.inputs.REPACK_NAME }}"
-          echo "--------------------------------------"
-          ls
-          echo "--------------------------------------"
-          mkdir upload_ab
-          echo "--------------------------------------"
-          ls upload_ab
-          echo "--------------------------------------"
-          if [ $(ls -l AB_${{ github.event.inputs.REPACK_NAME }} | awk '{print $5}') -gt 2147483647 ]; then tar cvzpf - AB_${{ github.event.inputs.REPACK_NAME }} | split -d -b 1024m - upload_ab/AB_${{ github.event.inputs.REPACK_NAME }}; else mv AB_${{ github.event.inputs.REPACK_NAME }} upload_ab/AB_${{ github.event.inputs.REPACK_NAME }}; fi
-          echo "--------------------------------------"
-          ls upload_ab
-          echo "--------------------------------------"
-          
-       - name: Upload to Artifact OF AB
-         uses: actions/upload-artifact@v3 
-         with: 
-          name: "SGSI"
-          path: |
-           ${{ github.workspace }}/Tool-SGSI-build/upload_aonly/*
-           ${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt
-          
-
- job2:
-    needs: job1
-    runs-on: ubuntu-20.04   
-    steps:
-      - name: Step 1
-        if: ${{ github.event.inputs.SGSI_TYPE == 'A' }}
-        run: echo "Executing job 2"
-      - name: Step 2
-        run: echo "This is job 2"
-    
       - name: Get the source code of this repositorie...
         uses: actions/checkout@main
 
@@ -148,7 +50,7 @@ jobs:
 
       - name: Configuration Environment‌‌...
         run: |
-          sudo apt-get install -y git wget git zip unzip curl axel aria2c
+          sudo apt-get install -y git wget git zip unzip curl axel aria2
 
       - name: Get the SGSI tool‌‌...
         run: |
@@ -160,11 +62,98 @@ jobs:
           sudo cp -r apps_clean $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
           sudo chmod 777 -R $GITHUB_WORKSPACE/Tool-SGSI-build
 
-      - name: Download ROM
+      - name: Download ROM OF Aria2
         run: |
          cd $GITHUB_WORKSPACE/Tool-SGSI-build
          mkdir ./tmp
-         aria2c --user-agent="Mozilla/5.0" --dir="$GITHUB_WORKSPACE/Tool-SGSI-build/tmp" --out="${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}"
+         aria2 --user-agent="Mozilla/5.0" --dir="$GITHUB_WORKSPACE/Tool-SGSI-build/tmp" --out="${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}"
+         echo "zip_file: $(ls "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/")"
+
+      - name: Configuration tool environment...
+        run: |
+          sudo sed -i 's/USE_MIRROR_FOR_PIP\=true/USE_MIRROR_FOR_PIP\=false/' $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
+          sudo bash $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
+          sudo apt-get -y --purge remove "adoptopenjdk-11-hotspot"
+          java -version
+
+      - name: Make AB type GSI‌‌...
+        if: ${{ github.event.inputs.SGSI_TYPE }} == 'AB' || ${{ github.event.inputs.SGSI_TYPE }} == 'BOTH'
+        run: |
+          sudo bash $GITHUB_WORKSPACE/Tool-SGSI-build/make.sh AB << EOF
+          ${{ github.event.inputs.ZIP_NAME }}
+          y
+          y
+          ${{ github.event.inputs.OS_TYPE }}
+          y
+
+      - name: Packing(AB)...
+        if: ${{ github.event.inputs.SGSI_TYPE }} == 'AB' || ${{ github.event.inputs.SGSI_TYPE }} == 'BOTH'
+        run: |
+          cd $GITHUB_WORKSPACE/Tool-SGSI-build
+          pwd
+          zip -r AB_${{ github.event.inputs.REPACK_NAME }} SGSI/*
+          ls "AB_${{ github.event.inputs.REPACK_NAME }}"
+          echo "--------------------------------------"
+          ls
+          echo "--------------------------------------"
+          mkdir upload_ab
+          echo "--------------------------------------"
+          ls upload_ab
+          echo "--------------------------------------"
+          if [ $(ls -l AB_${{ github.event.inputs.REPACK_NAME }} | awk '{print $5}') -gt 2147483647 ]; then tar cvzpf - AB_${{ github.event.inputs.REPACK_NAME }} | split -d -b 1024m - upload_ab/AB_${{ github.event.inputs.REPACK_NAME }}; else mv AB_${{ github.event.inputs.REPACK_NAME }} upload_ab/AB_${{ github.event.inputs.REPACK_NAME }}; fi
+          echo "--------------------------------------"
+          ls upload_ab
+          echo "--------------------------------------"
+          
+      - name: Upload to Artifact OF AB
+        uses: actions/upload-artifact@v3 
+        with: 
+         name: "SGSI"
+         path: |
+           ${{ github.workspace }}/Tool-SGSI-build/upload_ab/*
+           ${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt
+          
+
+ BUILD-AONLY:
+    runs-on: ubuntu-20.04
+       
+    steps:
+      - name: Get the source code of this repositorie...
+        uses: actions/checkout@main
+
+      - name: Get variable configuration...
+        run: |
+          echo "BUILD_TIME=$(date +%s | md5sum | awk '{print substr($1,1,10)}')" >> $GITHUB_ENV
+
+      - name: Clean up the environment‌‌...
+        run: |
+          docker rmi `docker images -q`
+          sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
+          sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+          sudo -E apt-get update
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get clean
+          df -h
+
+      - name: Configuration Environment‌‌...
+        run: |
+          sudo apt-get install -y git wget git zip unzip curl axel aria2
+
+      - name: Get the SGSI tool‌‌...
+        run: |
+          git clone --recurse-submodules https://github.com/xiaoxindada/SGSI-build-tool.git -b 11 $GITHUB_WORKSPACE/Tool-SGSI-build
+
+      - name: Replace custom condensed content...
+        run: |
+          sudo rm -rf $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
+          sudo cp -r apps_clean $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
+          sudo chmod 777 -R $GITHUB_WORKSPACE/Tool-SGSI-build
+
+      - name: Download ROM OF Aria2
+        run: |
+         cd $GITHUB_WORKSPACE/Tool-SGSI-build
+         mkdir ./tmp
+         aria2 --user-agent="Mozilla/5.0" --dir="$GITHUB_WORKSPACE/Tool-SGSI-build/tmp" --out="${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}"
          echo "zip_file: $(ls "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/")"
 
       - name: Configuration tool environment...
