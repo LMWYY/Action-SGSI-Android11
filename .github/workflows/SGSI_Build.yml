@@ -51,7 +51,7 @@ jobs:
 
       - name: Configuration Environment‌‌...
         run: |
-          sudo apt-get install -y git wget git zip unzip curl axel
+          sudo apt-get install -y git wget git zip unzip curl axel httpie
 
       - name: Get the SGSI tool‌‌...
         run: |
@@ -67,15 +67,15 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/Tool-SGSI-build
           mkdir ./tmp
-          if [ ! -x "$(command -v curl)" ]; then
-          echo "curl command not found"
+          if [ ! -x "$(command -v http" ]]; then
+          echo "httpie command not found"
           exit 1
           fi
           if [ -z "${{ github.event.inputs.ROM_URL }}" ]; then
           echo "ROM_URL input is not set"
           exit 1
           fi
-          curl -L -o "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}" ${{ github.event.inputs.ROM_URL }}
+          http --download "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}"
           echo "zip_file: $(ls "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/")"
 
       - name: Configuration tool environment...
