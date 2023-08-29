@@ -110,28 +110,10 @@ jobs:
           ls upload_ab
           echo "--------------------------------------"
           
-      - name: Upload SGSI to SourceForge
-        continue-on-error: true
-        if: env.SF == 'true'
-        run: |
-         cd ${{ github.workspace }}/Tool-SGSI-build
-         expect -c "
-         spawn sftp ${{ secrets.SFUSER }}@frs.sourceforge.net
-         expect \"yes/no\"
-         send \"yes\r\"
-         expect \"Password\"
-         send \"${{ secrets.SFPASS }}\r\"
-         expect \"sftp> \"
-         send \"cd ${{ secrets.SFDIR }}\r\"
-         set timeout -1
-         send \"mkdir $ROM\r\"
-         expect \"sftp> \"
-         send \"cd $ROM\r\"
-         set timeout -1
-         send \"put upload_ab/*\r\"
-         send \"put SGSI/build_info.txt\r\"
-         expect \"Uploading\"
-         expect \"100%\"
-         expect \"sftp>\"
-         send \"bye\r\"
-         interact"
+      - name: Upload to Artifact OF AB
+        uses: actions/upload-artifact@v3 
+        with: 
+         name: "SGSI_AB"
+         path: |
+           ${{ github.workspace }}/Tool-SGSI-build/upload_ab/*
+           ${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt
