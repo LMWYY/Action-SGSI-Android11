@@ -29,10 +29,11 @@
    |:------:           |:------:   | :------------------------:                                               |
    |待制作包链接       |ROM_URL    |https://hugeota.d.miui.com/21.5.31/miui_TUCANA_21.5.31_cb42ec9bed_11.0.zip|
    |待制作包名称       |ZIP_NAME   |miui_TUCANA_21.5.31_cb42ec9bed_11.0.zip                                   |
-   |待制作包种类       |OS_TYPE    |miui                                                                      |
-   |打包名称           |REPACK_NAME|SGSI.zip                                                                  |
+   |待制作包种类       |OS_TYPE    |miui
+   |待制SGSI种类      |SGSI_TYPE  |AB.BOTH.AONLY                                          |
+   |打包名称          |REPACK_NAME|SGSI.zip                                                                  |
 
-3. 开始制作
+4. 开始制作
    
    点击Run workflow绿色按钮即可开始制作
 
