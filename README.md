@@ -3,11 +3,9 @@
 > 适配Android R 11
 > 支持自定义精简功能
 >
-> 登录你的github,fork这个项目到你的github
+> 登录你的github,Fork此仓库到你的github
 > 
-> 创建 token
-> 
-> 进入settings -- Developer settings -- Personal access tokens -- Generate new token -- note填写RELEASE -- Expiration改为> No expiration -- Select scopes全部勾选 -- 点击Generate token创建token -- 复制得到的token令牌
+> 返回github首页点头像 -- 进入settings -- Developer settings -- Personal access tokens -- Generate new token -- note填写RELEASE -- Expiration改为> No expiration -- Select scopes全部勾选 -- 点击Generate token创建token -- 复制得到的token令牌
 > 
 > 创建 secret
 > 
