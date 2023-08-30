@@ -1,12 +1,19 @@
-# Action-SGSI-build
+# Action-SGSI-Android11
 
-> 适配Android R
->
-> 修复制作超过2G的SGSI无法上传Release的问题
->
+> 适配Android R 11
 > 支持自定义精简功能
 >
-> 当前版本: [v11](https://github.com/xiaoxindada/SGSI-build-tool/tree/11)
+> 登录你的github,fork这个项目到你的github
+> 
+> 创建 token
+> 
+> 进入settings -- Developer settings -- Personal access tokens -- Generate new token -- note填写RELEASE -- Expiration改为> No expiration -- Select scopes全部勾选 -- 点击Generate token创建token -- 复制得到的token令牌
+> 
+> 创建 secret
+> 
+> 进入你的Actions_SGSI-Android11项目 -- settings -- Secrets -- Actions -- New repository secret -- Name填写RELEASE -- Value填写刚> 刚复制的token
+>
+>
 >
 > 注意：如果提示失败并在 下载ROM... 时出现 Error: Process completed with exit code 127. 系服务器网络问题，请重试
 
