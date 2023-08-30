@@ -116,3 +116,7 @@ jobs:
           files: |
             ${{ github.workspace }}/Tool-SGSI-build/upload_ab/*
             ${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt
+          tag_name: ${{ github.run_id }}
+          body: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.SGSI }}
