@@ -110,14 +110,9 @@ jobs:
           ls upload_ab
           echo "--------------------------------------"
           
-      - name: Upload to Artifact OF AB
-        uses: actions/upload-artifact@v3 
-        with: 
-         name: "SGSI_AB"
-         path: |
-           ${{ github.workspace }}/Tool-SGSI-build/upload_ab/AB_SGSI.zip00
-           ${{ github.workspace }}/Tool-SGSI-build/upload_ab/AB_SGSI.zip01
-           ${{ github.workspace }}/Tool-SGSI-build/upload_ab/AB_SGSI.zip02
-           ${{ github.workspace }}/Tool-SGSI-build/upload_ab/AB_SGSI.zip03
-           ${{ github.workspace }}/Tool-SGSI-build/upload_ab/AB_SGSI.zip04
-           ${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ github.workspace }}/Tool-SGSI-build/upload_ab/*
+            ${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt
