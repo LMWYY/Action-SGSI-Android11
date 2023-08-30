@@ -27,7 +27,7 @@ on:
 
 
 jobs:
- BUILD-AB:
+ SGSI-ab-both:
     runs-on: ubuntu-20.04
 
     steps:
