@@ -1,12 +1,17 @@
-# Action-SGSI-build
+# Action-SGSI-Android11
 
-> 适配Android R
->
-> 修复制作超过2G的SGSI无法上传Release的问题
->
+> 适配Android R 11
 > 支持自定义精简功能
 >
-> 当前版本: [v11](https://github.com/xiaoxindada/SGSI-build-tool/tree/11)
+> 登录你的github,Fork此仓库到你的github
+> 
+> 返回github首页点头像 -- 进入settings -- Developer settings -- Personal access tokens -- Generate new token -- note填写SGSI -- Expiration改为> No expiration -- Select scopes全部勾选 -- 点击Generate token创建token -- 复制得到的token令牌
+> 
+> 创建 secret
+> 
+> 进入你的Actions_SGSI-Android11项目 -- settings -- Secrets -- Actions -- New repository secret -- Name填写SGSI -- Value填写刚> 刚复制的token
+>
+>
 >
 > 注意：如果提示失败并在 下载ROM... 时出现 Error: Process completed with exit code 127. 系服务器网络问题，请重试
 
@@ -24,10 +29,11 @@
    |:------:           |:------:   | :------------------------:                                               |
    |待制作包链接       |ROM_URL    |https://hugeota.d.miui.com/21.5.31/miui_TUCANA_21.5.31_cb42ec9bed_11.0.zip|
    |待制作包名称       |ZIP_NAME   |miui_TUCANA_21.5.31_cb42ec9bed_11.0.zip                                   |
-   |待制作包种类       |OS_TYPE    |miui                                                                      |
-   |打包名称           |REPACK_NAME|SGSI.zip                                                                  |
+   |待制作包种类       |OS_TYPE    |miui
+   |待制SGSI种类      |SGSI_TYPE  |AB.BOTH.AONLY                                          |
+   |打包名称          |REPACK_NAME|SGSI.zip                                                                  |
 
-3. 开始制作
+4. 开始制作
    
    点击Run workflow绿色按钮即可开始制作
 
