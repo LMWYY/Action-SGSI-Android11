@@ -5,11 +5,11 @@
 >
 > 登录你的github,Fork此仓库到你的github
 > 
-> 返回github首页点头像 -- 进入settings -- Developer settings -- Personal access tokens -- Generate new token -- note填写RELEASE -- Expiration改为> No expiration -- Select scopes全部勾选 -- 点击Generate token创建token -- 复制得到的token令牌
+> 返回github首页点头像 -- 进入settings -- Developer settings -- Personal access tokens -- Generate new token -- note填写SGSI -- Expiration改为> No expiration -- Select scopes全部勾选 -- 点击Generate token创建token -- 复制得到的token令牌
 > 
 > 创建 secret
 > 
-> 进入你的Actions_SGSI-Android11项目 -- settings -- Secrets -- Actions -- New repository secret -- Name填写RELEASE -- Value填写刚> 刚复制的token
+> 进入你的Actions_SGSI-Android11项目 -- settings -- Secrets -- Actions -- New repository secret -- Name填写SGSI -- Value填写刚> 刚复制的token
 >
 >
 >
