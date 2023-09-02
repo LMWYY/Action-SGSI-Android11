@@ -16,7 +16,7 @@ on:
         required: true
         default: 'miui'
       SGSI_TYPE:
-        description: 'SGSI_TYPE(AB or BOTH)'
+        description: 'SGSI_TYPE(AB, A, or BOTH)'
         required: true
         default: 'AB'
       REPACK_NAME:
@@ -26,8 +26,9 @@ on:
 
 
 
+
 jobs:
- SGSI-ab-both:
+  build:
     runs-on: ubuntu-20.04
 
     steps:
@@ -50,7 +51,7 @@ jobs:
 
       - name: Configuration Environment‌‌...
         run: |
-          sudo apt-get install -y git wget git zip unzip curl axel aria2
+          sudo apt-get install -y git wget git zip unzip curl axel
 
       - name: Get the SGSI tool‌‌...
         run: |
@@ -62,24 +63,19 @@ jobs:
           sudo cp -r apps_clean $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
           sudo chmod 777 -R $GITHUB_WORKSPACE/Tool-SGSI-build
 
-      - name: Download ROM using aria2
+      - name: Download ROM‌‌...
         run: |
-         cd $GITHUB_WORKSPACE/Tool-SGSI-build
-         mkdir ./tmp
-         aria2c --user-agent="Mozilla/5.0" --dir="$GITHUB_WORKSPACE/Tool-SGSI-build/tmp" --out="${{ github.event.inputs.ZIP_NAME }}" "${{ github.event.inputs.ROM_URL }}" || echo "Download failed"
-         if [[ -f "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}" ]]; then
-         echo "Zip file downloaded successfully"
-         else
-         echo "Failed to download zip file"
-         fi
+          cd $GITHUB_WORKSPACE/Tool-SGSI-build
+          mkdir ./tmp
+          wget -U "Mozilla/5.0" ${{ github.event.inputs.ROM_URL }} -O "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/${{ github.event.inputs.ZIP_NAME }}"
+          echo "zip_file: $(ls "$GITHUB_WORKSPACE/Tool-SGSI-build/tmp/")"
 
-      - name: Configuration tool environment
+      - name: Configuration tool environment...
         run: |
-         sudo sed -i 's/USE_MIRROR_FOR_PIP\=true/USE_MIRROR_FOR_PIP\=false/' $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
-         sudo bash $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
-         sudo apt-get -y --purge remove "adoptopenjdk-11-hotspot" || true
-         sudo apt-get -y install openjdk-11-jdk
-         java -version
+          sudo sed -i 's/USE_MIRROR_FOR_PIP\=true/USE_MIRROR_FOR_PIP\=false/' $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
+          sudo bash $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
+          sudo apt-get -y --purge remove "adoptopenjdk-11-hotspot"
+          java -version
 
       - name: Make AB type GSI‌‌...
         if: ${{ github.event.inputs.SGSI_TYPE }} == 'AB' || ${{ github.event.inputs.SGSI_TYPE }} == 'BOTH'
@@ -109,14 +105,41 @@ jobs:
           echo "--------------------------------------"
           ls upload_ab
           echo "--------------------------------------"
-          
-      - name: UploaU TO Release
-        uses: softprops/action-gh-release@v1
+
+      - name: Make A-only type GSI‌‌...
+        if: ${{ github.event.inputs.SGSI_TYPE }} == 'A' || ${{ github.event.inputs.SGSI_TYPE }} == 'BOTH'
+        run: |
+          sudo bash $GITHUB_WORKSPACE/Tool-SGSI-build/make.sh A << EOF
+          ${{ github.event.inputs.ZIP_NAME }}
+          y
+          y
+          ${{ github.event.inputs.OS_TYPE }}
+          y
+
+      - name: Packing(A-only)...
+        if: ${{ github.event.inputs.SGSI_TYPE }} == 'A' || ${{ github.event.inputs.SGSI_TYPE }} == 'BOTH'
+        run: |
+          cd $GITHUB_WORKSPACE/Tool-SGSI-build
+          pwd
+          zip -r AONLY_${{ github.event.inputs.REPACK_NAME }} SGSI/*
+          ls "AONLY_${{ github.event.inputs.REPACK_NAME }}"
+          echo "--------------------------------------"
+          ls
+          echo "--------------------------------------"
+          mkdir upload_aonly
+          echo "--------------------------------------"
+          ls upload_aonly
+          echo "--------------------------------------"
+          if [ $(ls -l AONLY_${{ github.event.inputs.REPACK_NAME }} | awk '{print $5}') -gt 2147483647 ]; then tar cvzpf - AONLY_${{ github.event.inputs.REPACK_NAME }} | split -d -b 1024m - upload_aonly/AONLY_${{ github.event.inputs.REPACK_NAME }}; else mv AONLY_${{ github.event.inputs.REPACK_NAME }} upload_aonly/AONLY_${{ github.event.inputs.REPACK_NAME }}; fi
+          echo "--------------------------------------"
+          ls upload_aonly
+          echo "--------------------------------------"
+
+      - name: Upload to Release‌‌...
+        uses: ncipollo/release-action@v1.8.0
         with:
-          files: |
-            ${{ github.workspace }}/Tool-SGSI-build/upload_ab/*
-            ${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt
-          tag_name: ${{ github.event.inputs.ZIP_NAME }}
-          body: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        env:
+          artifacts: "${{ github.workspace }}/Tool-SGSI-build/upload_ab/*,${{ github.workspace }}/Tool-SGSI-build/upload_aonly/*"
+          tag: "${{ github.event.inputs.REPACK_NAME }}_${{ env.BUILD_TIME }}"
+          bodyFile: "${{ github.workspace }}/Tool-SGSI-build/SGSI/build_info.txt"
+          token: ${{ secrets.GITHUB_TOKEN }}        env:
           GITHUB_TOKEN: ${{ secrets.SGSI }}
