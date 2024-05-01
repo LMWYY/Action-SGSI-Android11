@@ -46,17 +46,21 @@ jobs:
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get clean
           df -h
+          
       - name: Configuration Environment‌‌...
         run: |
           sudo apt-get install -y git wget git zip unzip curl axel aria2
+          
       - name: Get the SGSI tool‌‌...
         run: |
           git clone --recurse-submodules https://github.com/PdyLZY/SGSI-build-tool.git -b 11 $GITHUB_WORKSPACE/Tool-SGSI-build
+    
       - name: Replace custom condensed content...
         run: |
           sudo rm -rf $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
           sudo cp -r apps_clean $GITHUB_WORKSPACE/Tool-SGSI-build/apps_clean
           sudo chmod 777 -R $GITHUB_WORKSPACE/Tool-SGSI-build
+   
       - name: Download ROM using aria2
         run: |
          cd $GITHUB_WORKSPACE/Tool-SGSI-build
@@ -67,6 +71,7 @@ jobs:
          else
          echo "Failed to download zip file"
          fi
+  
       - name: Configuration tool environment
         run: |
          sudo sed -i 's/USE_MIRROR_FOR_PIP\=true/USE_MIRROR_FOR_PIP\=false/' $GITHUB_WORKSPACE/Tool-SGSI-build/setup.sh
@@ -74,6 +79,7 @@ jobs:
          sudo apt-get -y --purge remove "adoptopenjdk-11-hotspot" || true
          sudo apt-get -y install openjdk-11-jdk
          java -version
+     
       - name: Make AB type GSI‌‌...
         if: ${{ github.event.inputs.SGSI_TYPE }} == 'AB' || ${{ github.event.inputs.SGSI_TYPE }} == 'BOTH'
         run: |
@@ -83,6 +89,7 @@ jobs:
           y
           ${{ github.event.inputs.OS_TYPE }}
           y
+    
       - name: Packing(AB)...
         if: ${{ github.event.inputs.SGSI_TYPE }} == 'AB' || ${{ github.event.inputs.SGSI_TYPE }} == 'BOTH'
         run: |
@@ -98,9 +105,7 @@ jobs:
           ls upload_ab
           echo "--------------------------------------"
           if [ $(ls -l AB_${{ github.event.inputs.REPACK_NAME }} | awk '{print $5}') -gt 2147483647 ]; then tar cvzpf - AB_${{ github.event.inputs.REPACK_NAME }} | split -d -b 1024m - upload_ab/AB_${{ github.event.inputs.REPACK_NAME }}; else mv AB_${{ github.event.inputs.REPACK_NAME }} upload_ab/AB_${{ github.event.inputs.REPACK_NAME }}; fi
-          echo "--------------------------------------"
-          ls upload_ab
-          echo "--------------------------------------"
+          echo "--------------------
           
       - name: UploaU TO Release
         uses: softprops/action-gh-release@v1
